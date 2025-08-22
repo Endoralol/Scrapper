@@ -1,4 +1,10 @@
 import cheerio from "cheerio";
+import fetch from "node-fetch";
+
+// Ensure fetch is globally available (for some Vercel environments)
+if (!globalThis.fetch) {
+    globalThis.fetch = fetch;
+}
 
 export default async function handler(req, res) {
     const { title, year } = req.query;
@@ -7,12 +13,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing 'title' query parameter." });
     }
 
-    // Clean and encode search query
     const searchQuery = encodeURIComponent(`${title}${year ? " " + year : ""}`);
     const searchUrl = `https://vidsrc.to/search/${searchQuery}`;
 
     try {
-        // Fetch search results page
         const searchResp = await fetch(searchUrl, {
             headers: {
                 "User-Agent": "Mozilla/5.0 (compatible; ScraperBot/1.0)"
@@ -23,7 +27,6 @@ export default async function handler(req, res) {
         const searchHtml = await searchResp.text();
         const $ = cheerio.load(searchHtml);
 
-        // Try to find the first matched movie card
         const movieCard = $(".video-block").first();
         if (!movieCard.length) {
             return res.status(404).json({ error: "Movie not found." });
@@ -38,7 +41,6 @@ export default async function handler(req, res) {
             return res.status(404).json({ error: "Movie page link not found." });
         }
 
-        // Fetch movie detail page to get streaming links
         const moviePageUrl = `https://vidsrc.to${movieLink}`;
         const movieResp = await fetch(moviePageUrl, {
             headers: {
@@ -50,7 +52,6 @@ export default async function handler(req, res) {
         const movieHtml = await movieResp.text();
         const $$ = cheerio.load(movieHtml);
 
-        // Scrape streaming sources (all server tabs)
         const sources = [];
         $$('.server__list .server__item').each((i, el) => {
             const serverName = $$(el).find(".server__name").text().trim();
@@ -70,6 +71,8 @@ export default async function handler(req, res) {
             sources
         });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        // Log error for Vercel function logs
+        console.error("API Error:", err);
+        res.status(500).json({ error: err.message || "Unknown server error." });
     }
 }
