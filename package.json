@@ -1,1 +1,14 @@
-{\n  "name": "scrapper",\n  "version": "1.0.0",\n  "type": "module",\n  "description": "Educational demo for scraping movie/video sources from aggregator sites like vidsrc, for research purposes only.",\n  "main": "index.js",\n  "scripts": {\n    "start": "node index.js"\n  },\n  "dependencies": {\n    "axios": "^1.6.0",\n    "cheerio": "^1.0.0-rc.12"\n  }\n}
+{
+  "name": "scrapper",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Educational demo for scraping movie/video sources from aggregator sites like vidsrc, for research purposes only.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
