@@ -1,12 +1,7 @@
 {
-  "name": "scrapper",
+  "name": "vidsrc-api",
   "version": "1.0.0",
   "type": "module",
-  "description": "Educational demo for scraping movie/video sources from aggregator sites like vidsrc, for research purposes only.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
   "dependencies": {
     "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12"
